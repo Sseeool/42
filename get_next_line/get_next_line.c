@@ -29,17 +29,20 @@ int	find_newline(char *backup)
 char	*get_backup(char *backup, int fd, int *i)
 {
 	char	buf[BUFFER_SIZE + 1];
-	ssize_t	read_bytes;
+	int		read_bytes;
 
 	if (!backup)
 		backup = ft_strdup("");
 	while (1)
 	{
-		buf[0] = '\0';
 		read_bytes = read(fd, buf, BUFFER_SIZE);
 		buf[read_bytes] = '\0';
 		if ((read_bytes == 0 && backup[0] == '\0') || read_bytes == -1)
+		{
+			free(backup);
+			backup = NULL;
 			return (NULL);
+		}
 		if (buf[0] != '\0')
 			backup = ft_strjoin(backup, buf);
 		*i = find_newline(backup);
@@ -56,12 +59,14 @@ char	*get_next_line(int fd)
 	char		*temp;
 	int			i;
 
+	if (BUFFER_SIZE <= 0 || fd < 0 )
+		return (NULL);
 	temp = get_backup(backup, fd, &i);
 	if (temp == NULL)
 		return (NULL);
 	if (i == -1)
 	{
-		backup = ft_strdup("");
+		backup = NULL;
 		return (temp);
 	}
 	result = ft_substr(temp, 0, i + 1);
@@ -69,3 +74,17 @@ char	*get_next_line(int fd)
 	free(temp);
 	return (result);
 }
+
+// int main()
+// {
+// 	int fd;
+// 	char *line;
+
+// 	fd = open("test.txt", O_RDONLY);
+// 	while((line = get_next_line(fd)))
+// 	{
+// 		printf ("%s", line);
+// 		free(line);
+// 	}
+// }
+
