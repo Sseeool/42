@@ -41,9 +41,9 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 
 char	*ft_strdup(const char *s)
 {
-	char	*p;
 	size_t		len;
 	size_t		i;
+	char		*p;
 
 	len = ft_strlen(s);
 	i = 0;

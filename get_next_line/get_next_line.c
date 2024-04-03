@@ -1,6 +1,4 @@
 #include "get_next_line.h"
-#include "get_next_line_utils.c"
-#include <stdio.h>
 
 int	find_newline(char *backup)
 {
@@ -10,7 +8,7 @@ int	find_newline(char *backup)
 	while (backup[i])
 	{
 		if (backup[i] == '\n')
-			return i;
+			return (i);
 		i++;
 	}
 	return (-1);
@@ -43,9 +41,9 @@ char	*get_backup(char *backup, int fd, int *i)
 char	*get_next_line(int fd)
 {
 	static char	*backup;
-	char	*result;
-	char	*temp;
-	int		i;
+	char		*result;
+	char		*temp;
+	int			i;
 
 	temp = get_backup(backup, fd, &i);
 	if (temp == NULL)
@@ -59,23 +57,4 @@ char	*get_next_line(int fd)
 	backup = ft_substr(temp, i + 1, ft_strlen(temp));
 	free(temp);
 	return (result);
-}
-
-int main()
-{
-	int	fd;
-	int	i;
-	char *line;
-
-	fd = open("./test.txt", 0);
-
-	/*for (int i = 0; i < 10; i++)
-		printf("%s", get_next_line(fd));*/
-	line = get_next_line(fd);
-	while (line > 0)
-	{
-		printf("%s", line);
-		line = get_next_line(fd);
-	}
-	return 0;
 }
