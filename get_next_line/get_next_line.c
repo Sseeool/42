@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eonoh <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: eonoh <eonoh@student.42gyeongsan.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 15:31:30 by eonoh             #+#    #+#             */
-/*   Updated: 2024/04/03 15:31:33 by eonoh            ###   ########.fr       */
+/*   Created: 2024/03/24 22:30:53 by eonoh             #+#    #+#             */
+/*   Updated: 2024/03/29 20:18:20 by eonoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,23 @@ int	find_newline(char *backup)
 	return (-1);
 }
 
+#include <stdio.h>
+
 char	*get_backup(char *backup, int fd, int *i)
 {
 	char	buf[BUFFER_SIZE + 1];
 	int		read_bytes;
 
-	if (!backup)
+	if (backup == NULL)
 		backup = ft_strdup("");
 	while (1)
 	{
 		read_bytes = read(fd, buf, BUFFER_SIZE);
-		buf[read_bytes] = '\0';
+		if (read_bytes >= 0)
+			buf[read_bytes] = '\0';
 		if ((read_bytes == 0 && backup[0] == '\0') || read_bytes == -1)
 		{
 			free(backup);
-			backup = NULL;
 			return (NULL);
 		}
 		if (buf[0] != '\0')
@@ -59,11 +61,14 @@ char	*get_next_line(int fd)
 	char		*temp;
 	int			i;
 
-	if (BUFFER_SIZE <= 0 || fd < 0 )
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	temp = get_backup(backup, fd, &i);
 	if (temp == NULL)
+	{
+		backup = NULL;
 		return (NULL);
+	}
 	if (i == -1)
 	{
 		backup = NULL;
@@ -75,16 +80,15 @@ char	*get_next_line(int fd)
 	return (result);
 }
 
-// int main()
-// {
-// 	int fd;
-// 	char *line;
+/*int main()
+{
+	int fd;
+	char *line;
 
-// 	fd = open("test.txt", O_RDONLY);
-// 	while((line = get_next_line(fd)))
-// 	{
-// 		printf ("%s", line);
-// 		free(line);
-// 	}
-// }
-
+	fd = open("test.txt", O_RDONLY);
+	while((line = get_next_line(fd)))
+	{
+		printf ("%s", line);
+		free(line);
+	}
+}*/
