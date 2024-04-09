@@ -54,26 +54,26 @@ char	*get_temp(char *backup, int fd, int *i)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup;
+	static char	*backup[1024];
 	char		*result;
 	char		*temp;
 	int			i;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	temp = get_temp(backup, fd, &i);
+	temp = get_temp(backup[fd], fd, &i);
 	if (temp == NULL)
 	{
-		backup = NULL;
+		backup[fd] = NULL;
 		return (NULL);
 	}
 	if (i == -1)
 	{
-		backup = NULL;
+		backup[fd] = NULL;
 		return (temp);
 	}
 	result = ft_substr(temp, 0, i + 1);
-	backup = ft_substr(temp, i + 1, ft_strlen(temp));
+	backup[fd] = ft_substr(temp, i + 1, ft_strlen(temp));
 	free(temp);
 	return (result);
 }
