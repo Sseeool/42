@@ -6,7 +6,7 @@
 /*   By: eonoh <eonoh@student.42gyeongsan.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 22:30:53 by eonoh             #+#    #+#             */
-/*   Updated: 2024/04/05 11:09:40 by eonoh            ###   ########.fr       */
+/*   Updated: 2024/04/10 11:43:05 by eonoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ int	find_newline(char *backup)
 	return (-1);
 }
 
-char	*get_temp(char *backup, int fd, int *i)
+char	*get_backup(char *backup, char *buf, int fd, int *i)
 {
-	char	buf[BUFFER_SIZE + 1];
 	int		read_bytes;
 
 	if (backup == NULL)
@@ -41,7 +40,8 @@ char	*get_temp(char *backup, int fd, int *i)
 		if ((read_bytes == 0 && backup[0] == '\0') || read_bytes == -1)
 		{
 			free(backup);
-			return (NULL);
+			backup = NULL;
+			return (0);
 		}
 		if (buf[0] != '\0')
 			backup = ft_strjoin(backup, buf);
@@ -57,16 +57,18 @@ char	*get_next_line(int fd)
 	static char	*backup;
 	char		*result;
 	char		*temp;
+	char		*buf;
 	int			i;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (0);
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
 		return (NULL);
-	temp = get_temp(backup, fd, &i);
+	temp = get_backup(backup, buf, fd, &i);
+	free(buf);
 	if (temp == NULL)
-	{
-		backup = NULL;
 		return (NULL);
-	}
 	if (i == -1)
 	{
 		backup = NULL;

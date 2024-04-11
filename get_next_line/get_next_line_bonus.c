@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eonoh <eonoh@student.42gyeongsan.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 22:30:53 by eonoh             #+#    #+#             */
-/*   Updated: 2024/04/05 11:09:40 by eonoh            ###   ########.fr       */
+/*   Updated: 2024/04/10 11:40:34 by eonoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	find_newline(char *backup)
 {
@@ -26,9 +26,8 @@ int	find_newline(char *backup)
 	return (-1);
 }
 
-char	*get_temp(char *backup, int fd, int *i)
+char	*get_temp(char *backup, char *buf, int fd, int *i)
 {
-	char	buf[BUFFER_SIZE + 1];
 	int		read_bytes;
 
 	if (backup == NULL)
@@ -41,6 +40,7 @@ char	*get_temp(char *backup, int fd, int *i)
 		if ((read_bytes == 0 && backup[0] == '\0') || read_bytes == -1)
 		{
 			free(backup);
+			backup = NULL;
 			return (NULL);
 		}
 		if (buf[0] != '\0')
@@ -54,22 +54,24 @@ char	*get_temp(char *backup, int fd, int *i)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup[1024];
+	static char	*backup[OPEN_MAX];
 	char		*result;
 	char		*temp;
+	char		*buf;
 	int			i;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	temp = get_temp(backup[fd], fd, &i);
-	if (temp == NULL)
-	{
-		backup[fd] = NULL;
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
 		return (NULL);
-	}
+	temp = get_temp(backup[fd], buf, fd, &i);
+	free(buf);
+	if (temp == NULL)
+		return (NULL);
 	if (i == -1)
 	{
-		backup[fd] = NULL;
+		backup[fd] = 0;
 		return (temp);
 	}
 	result = ft_substr(temp, 0, i + 1);

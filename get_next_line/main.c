@@ -1,3 +1,7 @@
+/*#include "get_next_line.c"
+#include "get_next_line.h"
+#include "get_next_line_utils.c"*/
+
 #include "get_next_line_bonus.c"
 #include "get_next_line_bonus.h"
 #include "get_next_line_utils_bonus.c"
@@ -14,7 +18,6 @@ int main()
 
 	fd1 = open("test.txt", O_RDONLY);
 	fd2 = open("test2.txt", O_RDONLY);
-	printf("fd1 = %d fd2 = %d\n", fd1, fd2);
 
 	while((line = get_next_line(fd1)))
 	{
@@ -28,4 +31,5 @@ int main()
 		free(line);
 	}
 	close(fd2);
+	return 0;
 }
