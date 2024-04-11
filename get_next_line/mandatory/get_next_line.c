@@ -26,7 +26,7 @@ int	find_newline(char *backup)
 	return (-1);
 }
 
-char	*get_backup(char **backup, char *buf, int fd, int *i)
+char	*get_temp(char **backup, char *buf, int fd, int *i)
 {
 	int		read_bytes;
 
@@ -65,7 +65,7 @@ char	*get_next_line(int fd)
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (NULL);
-	temp = get_backup(&backup, buf, fd, &i);
+	temp = get_temp(&backup, buf, fd, &i);
 	free(buf);
 	buf = NULL;
 	if (temp == NULL)
