@@ -26,28 +26,28 @@ int	find_newline(char *backup)
 	return (-1);
 }
 
-char	*get_temp(char *backup, char *buf, int fd, int *i)
+char	*get_temp(char **backup, char *buf, int fd, int *i)
 {
 	int		read_bytes;
 
-	if (backup == NULL)
-		backup = ft_strdup("");
+	if (*backup == NULL)
+		*backup = ft_strdup("");
 	while (1)
 	{
 		read_bytes = read(fd, buf, BUFFER_SIZE);
 		if (read_bytes >= 0)
 			buf[read_bytes] = '\0';
-		if ((read_bytes == 0 && backup[0] == '\0') || read_bytes == -1)
+		if ((read_bytes == 0 && *backup[0] == '\0') || read_bytes == -1)
 		{
-			free(backup);
-			backup = NULL;
+			free(*backup);
+			*backup = NULL;
 			return (NULL);
 		}
 		if (buf[0] != '\0')
-			backup = ft_strjoin(backup, buf);
-		*i = find_newline(backup);
+			*backup = ft_strjoin(*backup, buf);
+		*i = find_newline(*backup);
 		if (*i != -1 || (*i == -1 && read_bytes == 0))
-			return (backup);
+			return (*backup);
 	}
 	return (NULL);
 }
@@ -65,13 +65,13 @@ char	*get_next_line(int fd)
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (NULL);
-	temp = get_temp(backup[fd], buf, fd, &i);
+	temp = get_temp(&backup[fd], buf, fd, &i);
 	free(buf);
 	if (temp == NULL)
 		return (NULL);
 	if (i == -1)
 	{
-		backup[fd] = 0;
+		backup[fd] = NULL;
 		return (temp);
 	}
 	result = ft_substr(temp, 0, i + 1);
